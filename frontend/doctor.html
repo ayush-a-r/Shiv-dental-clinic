@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Doctor Portal - Shiv Dental Clinic</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Doctor Portal</h2>
+    <details open>
+      <summary><strong>Add New Patient</strong></summary>
+      <form id="new-patient-form">
+        <input required name="name" placeholder="Name">
+        <input required name="phone" placeholder="Phone">
+        <input required type="date" name="dob" placeholder="Date of Birth">
+        <input name="address" placeholder="Address">
+        <select name="gender">
+          <option value="">Gender</option>
+          <option>Male</option><option>Female</option><option>Other</option>
+        </select>
+        <textarea name="medicalHistory" placeholder="Medical History"></textarea>
+        <button type="submit">Add Patient</button>
+      </form>
+    </details>
+    <details style="margin-top:24px;">
+      <summary><strong>Add Prescription to Existing Patient</strong></summary>
+      <form id="search-patient-form">
+        <input required name="phone" placeholder="Enter Patient Phone Number">
+        <button type="submit">Search Patient</button>
+      </form>
+      <div id="patient-search-results"></div>
+      <form id="add-prescription-form" style="display:none;">
+        <input required name="diagnosis" placeholder="Diagnosis">
+        <input required name="treatment" placeholder="Treatment">
+        <div id="medicine-list">
+          <label>Medicines:</label><br>
+        </div>
+        <button type="button" id="add-medicine-btn">Add More Medicine</button>
+        <textarea name="notes" placeholder="Notes"></textarea>
+        <button type="submit">Add Prescription</button>
+        <input type="hidden" name="patientId">
+      </form>
+      <div id="prescription-result"></div>
+    </details>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
