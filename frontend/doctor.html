@@ -4,6 +4,22 @@
   <title>Doctor Portal - Shiv Dental Clinic</title>
   <link rel="stylesheet" href="style.css">
 </head>
+  <script>
+const DOCTOR_ACCESS_CODE = "SD@1012";
+function checkCode() {
+  let ok = false;
+  while (!ok) {
+    const code = prompt("Enter Doctor Access Code:");
+    if (code === null) {
+      window.location.href = "sh1v_pati3nt_99.html";
+      return;
+    }
+    ok = code === DOCTOR_ACCESS_CODE;
+    if (!ok) alert("Incorrect! Try again or cancel to return.");
+  }
+}
+window.onload = checkCode;
+</script>
 <body>
   <div class="container">
     <h2>Doctor Portal</h2>
