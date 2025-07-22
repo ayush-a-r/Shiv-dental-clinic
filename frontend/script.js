@@ -2,7 +2,7 @@
 const API = 'http://localhost:5000';
 
 // ======= Doctor Portal Logic =======
-if (location.pathname.endsWith('doctor.html')) {
+if (location.pathname.endsWith('dir.html')) {
   // Add New Patient
   document.getElementById('new-patient-form').onsubmit = async function(e) {
     e.preventDefault();
