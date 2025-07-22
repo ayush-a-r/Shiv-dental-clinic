@@ -13,7 +13,7 @@ app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/shiv_dental_clinic', {
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/test", {
   useNewUrlParser: true, useUnifiedTopology: true
 });
 
