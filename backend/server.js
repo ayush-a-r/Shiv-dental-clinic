@@ -12,12 +12,19 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/shiv_dental_clinic', {
-  useNewUrlParser: true, useUnifiedTopology: true
+// --- MongoDB connection ---
+mongoose.connect(
+  process.env.MONGODB_URI
+);
+
+mongoose.connection.on('error', err => {
+  console.error('MongoDB connection error:', err.message);
+});
+mongoose.connection.once('open', () => {
+  console.log('MongoDB connected!');
 });
 
-// Helper: Calculate age from dob
+// --- Helper: Calculate age from dob ---
 function calculateAge(dob) {
   const d = new Date(dob);
   const today = new Date();
@@ -27,7 +34,8 @@ function calculateAge(dob) {
   return age;
 }
 
-// Add new patient (with DOB, auto-calc age)
+// --- All your API endpoints below (NO CHANGES NEEDED) ---
+
 app.post('/api/patient/new', async (req, res) => {
   try {
     const { name, phone, dob, address, gender, medicalHistory } = req.body;
@@ -41,8 +49,6 @@ app.post('/api/patient/new', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-
-// Find patients by phone (doctor/patient search)
 app.get('/api/patients/by-phone', async (req, res) => {
   const { phone } = req.query;
   if (!phone) return res.status(400).json({ error: 'Phone required.' });
@@ -50,8 +56,6 @@ app.get('/api/patients/by-phone', async (req, res) => {
   if (!patients.length) return res.status(404).json({ error: 'No patients found.' });
   res.json(patients);
 });
-
-// Add prescription to existing patient (by _id, with medicines)
 app.post('/api/patient/:id/prescribe', async (req, res) => {
   try {
     const { id } = req.params;
@@ -66,8 +70,6 @@ app.post('/api/patient/:id/prescribe', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-
-// Get prescriptions for a patient by id (patient selects from date list)
 app.get('/api/patient/:id/prescriptions', async (req, res) => {
   const patient = await Patient.findById(req.params.id);
   if (!patient) return res.status(404).json({ error: 'Patient not found' });
@@ -81,8 +83,6 @@ app.get('/api/patient/:id/prescriptions', async (req, res) => {
     pdfPath: p.pdfPath
   })));
 });
-
-// Get/display prescription details (for patient portal)
 app.get('/api/patient/:id/prescription/:pid', async (req, res) => {
   const { id, pid } = req.params;
   const patient = await Patient.findById(id);
@@ -104,8 +104,6 @@ app.get('/api/patient/:id/prescription/:pid', async (req, res) => {
     }
   });
 });
-
-// Generate prescription PDF on demand (for patient portal)
 app.post('/api/patient/:id/prescription/:pid/generate-pdf', async (req, res) => {
   const { id, pid } = req.params;
   const patient = await Patient.findById(id);
@@ -137,7 +135,7 @@ app.post('/api/patient/:id/prescription/:pid/generate-pdf', async (req, res) => 
   doc.text(`Treatment: ${prescription.treatment}`);
   doc.moveDown();
   doc.font('Helvetica-Bold').text('Medicines List:');
-  prescription.medicines.forEach((m, i) => {
+  (prescription.medicines || []).forEach((m, i) => {
     doc.font('Helvetica').text(`${i+1}. ${m.name} - ${m.dose || ''} - ${m.frequency || ''} - ${m.duration || ''} - ${m.instructions || ''}`);
   });
   doc.moveDown();
